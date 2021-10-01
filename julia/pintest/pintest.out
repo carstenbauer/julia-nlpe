@@ -1,0 +1,71 @@
+JULIA PLAIN:
+
+sort!(procids) = [1, 3, 4, 5, 10, 13, 14, 15]
+
+JULIA EXCLUSIVE:
+
+sort!(procids) = [0, 1, 2, 3, 4, 5, 6, 7]
+
+LIKWID PIN PLAIN:
+[pthread wrapper] 
+[pthread wrapper] MAIN -> 0
+[pthread wrapper] PIN_MASK: 0->1  1->2  2->3  3->4  4->5  5->6  6->7  
+[pthread wrapper] SKIP MASK: 0x0
+	threadid 140211592070720 -> hwthread 1 - OK
+	threadid 140211321300544 -> hwthread 2 - OK
+	threadid 140211299681856 -> hwthread 3 - OK
+	threadid 140211208058432 -> hwthread 4 - OK
+	threadid 140211187082816 -> hwthread 5 - OK
+	threadid 140211166107200 -> hwthread 6 - OK
+	threadid 140210872514112 -> hwthread 7 - OK
+Roundrobin placement triggered
+	threadid 140210851538496 -> hwthread 0 - OK
+
+sort!(procids) = [0, 0, 2, 3, 4, 5, 6, 7]
+
+LIKWID PIN MASKED:
+[pthread wrapper] 
+[pthread wrapper] MAIN -> 0
+[pthread wrapper] PIN_MASK: 0->1  1->2  2->3  3->4  4->5  5->6  6->7  
+[pthread wrapper] SKIP MASK: 0xFFFFFFFFFFFFFE01
+	threadid 139621619033664 -> SKIP 
+	threadid 139621348263488 -> hwthread 1 - OK
+	threadid 139621258229312 -> hwthread 2 - OK
+	threadid 139621237253696 -> hwthread 3 - OK
+	threadid 139621216278080 -> hwthread 4 - OK
+	threadid 139620989793856 -> hwthread 5 - OK
+	threadid 139620968818240 -> hwthread 6 - OK
+	threadid 139620947842624 -> hwthread 7 - OK
+
+sort!(procids) = [0, 1, 2, 3, 4, 5, 6, 7]
+
+LIKWID PERFCTR PLAIN:
+--------------------------------------------------------------------------------
+CPU name:	11th Gen Intel(R) Core(TM) i7-11700K @ 3.60GHz
+CPU type:	Intel Rocketlake processor
+CPU clock:	3.60 GHz
+--------------------------------------------------------------------------------
+
+sort!(procids) = [0, 0, 2, 3, 4, 5, 6, 7]
+
+--------------------------------------------------------------------------------
+LIKWID PERFCTR MASKED:
+--------------------------------------------------------------------------------
+CPU name:	11th Gen Intel(R) Core(TM) i7-11700K @ 3.60GHz
+CPU type:	Intel Rocketlake processor
+CPU clock:	3.60 GHz
+--------------------------------------------------------------------------------
+
+sort!(procids) = [0, 0, 2, 3, 4, 5, 6, 7]
+
+--------------------------------------------------------------------------------
+LIKWID PERFCTR + PIN MASKED:
+--------------------------------------------------------------------------------
+CPU name:	11th Gen Intel(R) Core(TM) i7-11700K @ 3.60GHz
+CPU type:	Intel Rocketlake processor
+CPU clock:	3.60 GHz
+--------------------------------------------------------------------------------
+
+sort!(procids) = [0, 1, 2, 3, 4, 5, 6, 7]
+
+--------------------------------------------------------------------------------
