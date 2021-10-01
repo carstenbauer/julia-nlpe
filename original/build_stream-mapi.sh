@@ -1,0 +1,1 @@
+icc -Ofast -xHost -qopenmp -fno-alias -nolib-inline -qopt-streaming-stores never -DLIKWID_PERFMON -I/usr/local/include stream-mapi.c -o stream-mapi -L/usr/local/lib -llikwid
