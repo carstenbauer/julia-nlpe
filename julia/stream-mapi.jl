@@ -2,6 +2,11 @@ using LIKWID
 using Printf
 using Base.Threads
 
+@show LIKWID.get_processor_id_glibc()
+@threads for i in 1:nthreads()
+    @show threadid(), LIKWID.get_processor_id_glibc()+1
+end
+
 # INSTRUCTIONS:
 #
 #	1) Stream requires a good bit of memory to run.  Adjust the
@@ -138,37 +143,55 @@ end
 
 
 function kernel_copy()
-    @region "COPY" begin
-        @threads for j in 1:N
-            @inbounds c[j] = a[j]
-        end
+    @threads for i in 1:nthreads()
+        Marker.startregion("COPY")
+    end
+    @threads for j in 1:N
+        @inbounds c[j] = a[j]
+    end
+    @threads for i in 1:nthreads()
+        Marker.stopregion("COPY")
     end
     return nothing
 end
 
 function kernel_scale()
-    @region "SCALE" begin
-        @threads for j in 1:N
-            @inbounds b[j] = scalar*c[j]
-        end
+    @threads for i in 1:nthreads()
+        Marker.startregion("SCALE")
+    end
+    @threads for j in 1:N
+        @inbounds b[j] = scalar*c[j]
+    end
+    @threads for i in 1:nthreads()
+        Marker.stopregion("SCALE")
     end
     return nothing
 end
 
 function kernel_add()
-    @region "ADD" begin
-        @threads for j in 1:N
-            @inbounds c[j] = a[j]+b[j]
-        end
+    @threads for i in 1:nthreads()
+        # @show threadid(), LIKWID.get_processor_id_glibc()
+        Marker.startregion("ADD")
+    end
+    @threads for j in 1:N
+        @inbounds c[j] = a[j]+b[j]
+    end
+    @threads for i in 1:nthreads()
+        # @show threadid(), LIKWID.get_processor_id_glibc()
+        Marker.stopregion("ADD")
     end
     return nothing
 end
 
 function kernel_triad()
-    @region "TRIAD" begin
-        @threads for j in 1:N
-            @inbounds a[j] = b[j]+scalar*c[j]
-        end
+    @threads for i in 1:nthreads()
+        Marker.startregion("TRIAD")
+    end
+    @threads for j in 1:N
+        @inbounds a[j] = b[j]+scalar*c[j]
+    end
+    @threads for i in 1:nthreads()
+        Marker.stopregion("TRIAD")
     end
     return nothing
 end
