@@ -15,8 +15,6 @@ const N = 40_000_000
 const NTIMES = 2#50
 const OFFSET = 0
 const HLINE = "-------------------------------------------------------------"
-const NPERTHREAD = Int(N/nthreads())
-const THREAD_IDCS = collect(Iterators.partition(1:N, NPERTHREAD))
 
 const a = Vector{Float64}(undef, N+OFFSET)
 const b = Vector{Float64}(undef, N+OFFSET)
@@ -140,9 +138,8 @@ end
 
 
 function kernel_copy()
-    @threads for i in 1:nthreads()
-        idcs = THREAD_IDCS[threadid()]
-        @region "COPY" for j in idcs
+    @region "COPY" begin
+        @threads for j in 1:N
             @inbounds c[j] = a[j]
         end
     end
@@ -150,9 +147,8 @@ function kernel_copy()
 end
 
 function kernel_scale()
-    @threads for i in 1:nthreads()
-        idcs = THREAD_IDCS[threadid()]
-        @region "SCALE" for j in idcs
+    @region "SCALE" begin
+        @threads for j in 1:N
             @inbounds b[j] = scalar*c[j]
         end
     end
@@ -160,9 +156,8 @@ function kernel_scale()
 end
 
 function kernel_add()
-    @threads for i in 1:nthreads()
-        idcs = THREAD_IDCS[threadid()]
-        @region "ADD" for j in idcs
+    @region "ADD" begin
+        @threads for j in 1:N
             @inbounds c[j] = a[j]+b[j]
         end
     end
@@ -170,14 +165,14 @@ function kernel_add()
 end
 
 function kernel_triad()
-    @threads for i in 1:nthreads()
-        idcs = THREAD_IDCS[threadid()]
-        @region "TRIAD" for j in idcs
+    @region "TRIAD" begin
+        @threads for j in 1:N
             @inbounds a[j] = b[j]+scalar*c[j]
         end
     end
     return nothing
 end
+
 
 
 const M = 20
