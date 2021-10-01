@@ -15,9 +15,10 @@ end
 #          that should be good to about 5% precision.
 #
 
+const NOLIKWID = false
 const VERBOSE = false
 const N = 40_000_000
-const NTIMES = 2#50
+const NTIMES = 50
 const OFFSET = 0
 const HLINE = "-------------------------------------------------------------"
 
@@ -42,7 +43,7 @@ const scalar = 3.0
 
 function main()
     times = [zeros(NTIMES) for _ in 1:4]
-    Marker.init()
+    NOLIKWID || Marker.init()
     # --- SETUP --- determine precision and check timing ---
     println(HLINE)
     BytesPerWord = sizeof(Float64)
@@ -57,7 +58,7 @@ function main()
     @printf("the *best* time for each is used.\n")
 
     # init LIKWID marker API on all "threads"
-    @threads for i in 1:nthreads()
+    NOLIKWID || @threads for i in 1:nthreads()
         Marker.threadinit()
     end
 
@@ -138,45 +139,45 @@ function main()
     checkSTREAMresults()
     println(HLINE)
 
-    Marker.close()
+    NOLIKWID || Marker.close()
 end
 
 
 function kernel_copy()
-    @threads for i in 1:nthreads()
+    NOLIKWID || @threads for i in 1:nthreads()
         Marker.startregion("COPY")
     end
     @threads for j in 1:N
         @inbounds c[j] = a[j]
     end
-    @threads for i in 1:nthreads()
+    NOLIKWID || @threads for i in 1:nthreads()
         Marker.stopregion("COPY")
     end
     return nothing
 end
 
 function kernel_scale()
-    @threads for i in 1:nthreads()
+    NOLIKWID || @threads for i in 1:nthreads()
         Marker.startregion("SCALE")
     end
     @threads for j in 1:N
         @inbounds b[j] = scalar*c[j]
     end
-    @threads for i in 1:nthreads()
+    NOLIKWID || @threads for i in 1:nthreads()
         Marker.stopregion("SCALE")
     end
     return nothing
 end
 
 function kernel_add()
-    @threads for i in 1:nthreads()
+    NOLIKWID || @threads for i in 1:nthreads()
         # @show threadid(), LIKWID.get_processor_id_glibc()
         Marker.startregion("ADD")
     end
     @threads for j in 1:N
         @inbounds c[j] = a[j]+b[j]
     end
-    @threads for i in 1:nthreads()
+    NOLIKWID || @threads for i in 1:nthreads()
         # @show threadid(), LIKWID.get_processor_id_glibc()
         Marker.stopregion("ADD")
     end
@@ -184,13 +185,13 @@ function kernel_add()
 end
 
 function kernel_triad()
-    @threads for i in 1:nthreads()
+    NOLIKWID || @threads for i in 1:nthreads()
         Marker.startregion("TRIAD")
     end
     @threads for j in 1:N
         @inbounds a[j] = b[j]+scalar*c[j]
     end
-    @threads for i in 1:nthreads()
+    NOLIKWID || @threads for i in 1:nthreads()
         Marker.stopregion("TRIAD")
     end
     return nothing
