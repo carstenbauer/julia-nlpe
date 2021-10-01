@@ -57,11 +57,6 @@ function main()
     @printf("Each test is run %d times, but only\n", NTIMES)
     @printf("the *best* time for each is used.\n")
 
-    # init LIKWID marker API on all "threads"
-    NOLIKWID || @batch for i in 1:num_threads()
-        Marker.threadinit()
-    end
-
     @batch for j in 1:N
         a[j] = 1.0
         b[j] = 2.0
