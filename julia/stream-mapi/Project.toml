@@ -1,0 +1,3 @@
+[deps]
+LIKWID = "bf22376a-e803-4184-b2ed-56326e3bff83"
+STREAMBenchmark = "05e9033e-e298-417a-adae-495536c11ad4"
