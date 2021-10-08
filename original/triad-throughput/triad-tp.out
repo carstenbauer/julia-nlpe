@@ -1,0 +1,14 @@
+➜  crstnbr@cbserver triad-throughput git:(main)  echo 10 | ./triad
+ Length:           10     MFLOP/s:    70011.9770901114     
+
+➜  crstnbr@cbserver triad-throughput git:(main)  echo 100 | ./triad
+ Length:          100     MFLOP/s:    214089.286585661     
+
+➜  crstnbr@cbserver triad-throughput git:(main)  echo 1000 | ./triad
+ Length:         1000     MFLOP/s:    83214.1973707759     
+
+➜  crstnbr@cbserver triad-throughput git:(main)  echo 10000 | ./triad
+ Length:        10000     MFLOP/s:    28270.1959756391     
+
+➜  crstnbr@cbserver triad-throughput git:(main)  echo 100000 | ./triad
+ Length:       100000     MFLOP/s:    6581.09731185817 
